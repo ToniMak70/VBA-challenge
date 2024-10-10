@@ -29,7 +29,7 @@ Sub stock_analysis()
     Dim tickerGreatest_Decrease As String
     Dim tickerGreatest_Volume As String
     Dim row As Double
-    
+           
     
     ' Initialize variables
     last_Row = ws.Cells(ws.Rows.Count, 1).End(xlUp).row
@@ -38,6 +38,7 @@ Sub stock_analysis()
     greatest_Volume = 0
     total_Volume = 0
     row_Start = 2
+    open_Price = ws.Cells(2, 3)
     
     ' Create Headers
     ws.Cells(1, 9).Value = "Ticker"
@@ -51,15 +52,17 @@ Sub stock_analysis()
     ws.Cells(3, 15).Value = "Greatest % Decrease"
     ws.Cells(4, 15).Value = "Greates Total Volume"
     
+        
     'Begin the loop
     For row = 2 To last_Row
         If ws.Cells(row + 1, 1).Value <> ws.Cells(row, 1).Value Then
                 ticker_Symbol = ws.Cells(row, 1).Value
                 total_Volume = total_Volume + ws.Cells(row, 7).Value
                 close_Price = ws.Cells(row, 6).Value
-               quarterly_Change = close_Price - open_Price
+                quarterly_Change = close_Price - open_Price
                If open_Price <> 0 Then
-                    percent_Change = (quarterly_Change / open_Price) * 100
+                    percent_Change = (quarterly_Change / open_Price)
+                    
         Else
             percent_Change = 0
         End If
@@ -69,6 +72,8 @@ Sub stock_analysis()
         ws.Range("J" & row_Start).Value = quarterly_Change
         ws.Range("K" & row_Start).Value = percent_Change
         ws.Range("L" & row_Start).Value = total_Volume
+        ws.Range("K" & row_Start).NumberFormat = "0.00%"
+        ws.Range("q" & row_Start).NumberFormat = "0.00%"
         
         ' Apply Conditional format
         If quarterly_Change >= 0 Then
@@ -76,6 +81,8 @@ Sub stock_analysis()
             Else
                 ws.Range("J" & row_Start).Interior.Color = vbRed
         End If
+        
+        
         
         ' Check and update greatest increase, decrease, and volume
         If percent_Change > greatest_Increase Then
@@ -108,7 +115,8 @@ Next row
         ws.Range("q3").Value = greatest_Decrease
         ws.Range("p4").Value = tickerGreatest_Volume
         ws.Range("q4").Value = greatest_Volume
-
+        
+        
 Next ws
 
 End Sub
